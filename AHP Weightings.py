@@ -1,44 +1,68 @@
 import numpy as np
 criteria_importance = np.array([[1,1,3,5,5],[1,1,3,5,5],[1/3,1/3,1,3,3],[1/5,1/5,1/3,1,1],[1/5,1/5,1/3,1,1]])
-# Sum of columns
-sum_of_columns = np.sum(criteria_importance, axis=0)
-#print('Column sum (ctieria importance):', sum_of_columns)
+def matrix_checker(criteria_importance):
+    # Check if the matrix is square
+    check = False
+    square = False
+    if criteria_importance.shape[0] == criteria_importance.shape[1]:
+        square = True
+    # Check if lead diagonal is 1
+    lead_diagonal = False
+    if np.all(np.diag(criteria_importance) == 1):
+        lead_diagonal = True
+    if square and lead_diagonal:
+        check = True
+    return check
+def weighting_calculator(criteria_importance):
+    # Sum of columns
+    sum_of_columns = np.sum(criteria_importance, axis=0)
 
-# Divide each column by the sum of the column
-normalized_matrix = criteria_importance / sum_of_columns
-#print('Normalized matrix (criteria importance): ', normalized_matrix)
+    # Divide each column by the sum of the column
+    normalized_importance_matrix = criteria_importance / sum_of_columns
 
-# Average of each row
-criteria_weightings = np.mean(normalized_matrix, axis=1)
-print('Criteria weightings: ', criteria_weightings)
+    # Average of each row (criteria weightings)
+    criteria_weightings = np.mean(normalized_importance_matrix, axis=1)
 
-# Multiply the first colum of the importance matrix by the average of the first row of the normalized matrix
-# Repeat for each row
-weighted_matrix = criteria_importance * criteria_weightings
-#print('Weighted matrix: ', weighted_matrix)
+    return criteria_weightings
 
-# Sum of each row of the weighted matrix
-weighted_sum_values = np.sum(weighted_matrix, axis=1)
-#print('Weighted sum vales:', weighted_sum_values)
+def consistency_checker(criteria_importance, criteria_weightings):
+    # Multiply the first colum of the importance matrix by the criteira weighting for the first row
+    # Repeat for each row
+    weighted_matrix = criteria_importance * criteria_weightings
 
-# divide each value of the weighted sum value by the ctieria weightings
-ratio_weighted_sum_values = weighted_sum_values / criteria_weightings
-#print('Weighted sum vales to criteria weightings ratios', ratio_weighted_sum_values)
+    # Sum of each row of the weighted matrix
+    weighted_sum_values = np.sum(weighted_matrix, axis=1)
 
-# Average of the ratio weighted sum values
-lambda_max = np.mean(ratio_weighted_sum_values)
-#print('Lambda max:', lambda_max)
+    # divide each value of the weighted sum value by the ctieria weightings
+    ratio_weighted_sum_values = weighted_sum_values / criteria_weightings
 
-# Consistency index
-consistency_index = (lambda_max - 5) / 4
-#print('Consistency index:', consistency_index)
+    # Average of the ratio weighted sum values
+    lambda_max = np.mean(ratio_weighted_sum_values)
+    
+    # Consistency index
+    consistency_index = (lambda_max - criteria_importance.shape[0]) / (criteria_importance.shape[0] - 1)
 
-# Consistency ratio
-consistency_ratio = consistency_index / 1.12
-print('Consistency ratio:', consistency_ratio)
+    # Random index for any number of criteria
+    random_index = {1:0, 2:0, 3:0.58, 4:0.9, 5:1.12, 6:1.24, 7:1.32, 8:1.41, 9:1.45, 10:1.49}
+    #Pick out the random index for the number of criteria
+    random_index = random_index[criteria_importance.shape[0]]
 
-# Consistency ratio is less than 0.1 so the matrix is consistent
-if consistency_ratio < 0.1:
-    print('The matrix is consistent')
-else:
-    print('The matrix is not consistent')
+    # Consistency ratio
+    consistency_ratio = consistency_index / 1.12
+
+    # Consistency ratio is less than 0.1 so the matrix is consistent
+    consistent = False
+    if consistency_ratio < 0.1:
+        consistent = True
+    return consistent
+
+
+print('Square matrix & Lead diagonal = 1:', matrix_checker(criteria_importance))
+print('Criteria weightings:', weighting_calculator(criteria_importance))
+print('Consistent:', consistency_checker(criteria_importance, weighting_calculator(criteria_importance)))
+
+
+
+
+
+
