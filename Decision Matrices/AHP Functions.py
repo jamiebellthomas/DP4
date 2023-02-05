@@ -40,7 +40,7 @@ def consistency_checker(criteria_importance, criteria_weightings):
     #Pick out the random index for the number of criteria
     random_index = random_index[criteria_importance.shape[0]]
     # Consistency ratio
-    consistency_ratio = consistency_index / 1.12
+    consistency_ratio = consistency_index / random_index
     # Consistency ratio is less than 0.1 so the matrix is consistent
     consistent = False
     if consistency_ratio < 0.1:

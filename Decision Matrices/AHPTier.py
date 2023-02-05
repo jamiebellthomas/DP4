@@ -41,7 +41,7 @@ class AHPTier():
         #Pick out the random index for the number of criteria
         self.random_index = self.random_index[self.importance_matrix.shape[0]]
         # Consistency ratio
-        self.consistency_ratio = self.consistency_index / 1.12
+        self.consistency_ratio = self.consistency_index / self.random_index
         # Consistency ratio is less than 0.1 so the matrix is consistent
         self.consistent = False
         if self.consistency_ratio < 0.1:
