@@ -36,8 +36,8 @@ class AHPTier():
         self.lambda_max = np.mean(self.ratio_weighted_sum_values)
         # Consistency index
         self.consistency_index = (self.lambda_max - self.importance_matrix.shape[0]) / (self.importance_matrix.shape[0] - 1)
-        # Random index for any number of criteria
-        self.random_index = {1:0, 2:0, 3:0.58, 4:0.9, 5:1.12, 6:1.24, 7:1.32, 8:1.41, 9:1.45, 10:1.49}
+        # Random index for any number of criteria between 1 and 12 in a dictionary 
+        self.random_index = {1:0,2:0,3:0.58,4:0.9,5:1.12,6:1.24,7:1.32,8:1.41,9:1.45,10:1.49,11:1.51,12:1.48}
         #Pick out the random index for the number of criteria
         self.random_index = self.random_index[self.importance_matrix.shape[0]]
         # Consistency ratio
@@ -56,4 +56,8 @@ class AHPTier():
 
         
         
-        
+class Criteria():
+    def __init__(self,name,weightings:dict,parent):
+        self.name = name
+        self.weighting = weightings[self.name]
+        self.parent = parent
