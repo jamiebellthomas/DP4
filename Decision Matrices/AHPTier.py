@@ -1,8 +1,9 @@
 import numpy as np
 class AHPTier():
-    def __init__(self,importance_matrix:np.array,criteria:list):
+    def __init__(self,importance_matrix:np.array,criteria:list,parent):
         self.importance_matrix = importance_matrix
         self.criteria = criteria
+        self.parent = parent
     def matrix_checker(self):
         # Check if the matrix is square
         self.check = False
@@ -41,7 +42,9 @@ class AHPTier():
         #Pick out the random index for the number of criteria
         self.random_index = self.random_index[self.importance_matrix.shape[0]]
         # Consistency ratio
-        self.consistency_ratio = self.consistency_index / self.random_index
+        self.consistency_ratio = 0
+        if self.importance_matrix.shape[0] > 2:
+            self.consistency_ratio = self.consistency_index / self.random_index
         # Consistency ratio is less than 0.1 so the matrix is consistent
         self.consistent = False
         if self.consistency_ratio < 0.1:
@@ -50,14 +53,9 @@ class AHPTier():
     def weightings_dictionary(self):
         self.weightings = {}
         for i in range(len(self.criteria)):
-            self.weightings[self.criteria[i]] = self.criteria_weightings[i].round(4)
+            self.weightings[self.criteria[i]] = self.criteria_weightings[i]
         return self.weightings
     
 
         
         
-class Criteria():
-    def __init__(self,name,weightings:dict,parent):
-        self.name = name
-        self.weighting = weightings[self.name]
-        self.parent = parent
