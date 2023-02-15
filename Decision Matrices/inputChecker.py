@@ -1,9 +1,10 @@
 import pandas as pd
+import numpy as np
 #TODO
 #Check:
 #parent criteria at the top of the hierarchy match parent critaria one-to-one (DONE)
 #criteria and sub-criteria are unique (no duplicates over any of the tiers) (DONE)
-#critera and sub-criteria are in sequential order (no gaps) 
+#critera and sub-criteria are in sequential order (no gaps) (DONE)
 #no missing importance values
 #informative error messages clearly highlighting the problem
 # Load in data
@@ -21,6 +22,9 @@ def criteria_unique(parent_criteria:list):
     if len(parent_criteria) == len(set(parent_criteria)):
         return True
     else:
+        for i in parent_criteria:
+            if parent_criteria.count(i) > 1:
+                print('Duplicate criteria: ' + i)
         return False
 
 def parent_match(data,parent_criteria:list ,criteria_number:int):
@@ -36,6 +40,9 @@ def parent_match(data,parent_criteria:list ,criteria_number:int):
     if sorted(parent_criteria) == sorted(parent_in_data_list):
         return True
     else:
+        print('Parent criteria defined at the top of the input spreadsheet do not match the parent criteria defined in the spreadsheet')
+        print('Parent criteria defined at the top of the input spreadsheet:',sorted(parent_criteria))
+        print('Parent criteria defined in the spreadsheet:',sorted(parent_in_data_list))
         return False
 
 
@@ -52,6 +59,9 @@ def sub_criteria_unique(data,criteria_number:int):
     if len(criteria_list) == len(set(criteria_list)):
         return True
     else:
+        for i in criteria_list:
+            if criteria_list.count(i) > 1:
+                print('Duplicate sub-criteria: ' + i)
         return False
 
 def criteria_sequentially(data):
@@ -90,7 +100,31 @@ def sub_criteria_sequentially(data,criteria_number:int,parent_criteria:list):
                     return False
     return True
 
+def importance_table_checker(data,criteria_number:int):
+    """
+    Check that the pairwise importance table for each relevent tier is complete
+    """
+    incomplete_tables = []
+    for i in range(0,criteria_number):
+        sub_criteria_row = list(data.iloc[13+(21*(i))])
+        sub_criteria_index = [i for i, x in enumerate(sub_criteria_row) if str(x) != 'nan']
+        importance_table = data.iloc[14+(21*(i)):14+(21*(i))+len(sub_criteria_index),sub_criteria_index]
+        importance_table = importance_table.to_numpy()
+        #print(importance_table)
+        # Check that the importance table is complete with no missing values
+        for x in range(0,len(importance_table)):
+            for y in range(0,len(importance_table)):
+                if np.isnan(importance_table[x,y]) == True:
+                    incomplete_tables.append(i+1)
+    if len(incomplete_tables) == 0:
+        return True
+    else:
+        # Print unique numbers in the list
+        incomplete_tables = list(set(incomplete_tables))
+        for i in incomplete_tables:
+            print('Incomplete importance table for Tier 2.' + str(i))
 
+        return False
 
 
 parents,number = criteria_info(data)
@@ -99,3 +133,4 @@ print("Criteria match with parent definitions:", parent_match(data,parents,numbe
 print("Unique sub-criteria:", sub_criteria_unique(data,number))
 print("Criteria appear sequentially:", criteria_sequentially(data))
 print("Sub-criteria appear sequentially:", sub_criteria_sequentially(data,number,parents))
+print("Importance tables completed:", importance_table_checker(data,number))
