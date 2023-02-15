@@ -3,9 +3,12 @@
 import pandas as pd
 import numpy as np
 from AHPTier import * 
+import pickle
 
 
 data = pd.read_excel('hierarchy.xlsx', sheet_name='Sheet1', header=0, index_col=0)
+model_name = (data.iat[0,5])
+print(model_name)
 criteria_dictionary,number_of_criteria = (criteria_tier_weightings(data))
 
 # Initialise dictionary to store sub criteria information
@@ -40,7 +43,9 @@ if sub_criteria_tier.consistency_checker() and sub_criteria_tier.matrix_checker(
 
 
 
-print('Criteria Dictionary', criteria_dictionary)
+print('Criteria Dictionary:', criteria_dictionary)
 print('---------------------')
-print('Sub-Criteria Dictionary', sub_criteria_dictionary)
+print('Sub-Criteria Dictionary:', sub_criteria_dictionary)
 
+with open(f'Models/{model_name}', 'wb') as f:
+    pickle.dump((criteria_dictionary, sub_criteria_dictionary), f)
