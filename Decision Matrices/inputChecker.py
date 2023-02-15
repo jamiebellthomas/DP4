@@ -54,6 +54,42 @@ def sub_criteria_unique(data,criteria_number:int):
     else:
         return False
 
+def criteria_sequentially(data):
+    """
+    Check that the criteria are in sequential order (no gaps)
+    """
+    criteria_row = list(data.iloc[1])
+        
+    criteria_index = [i for i, x in enumerate(criteria_row) if str(x) != 'nan']
+    criteria_index = criteria_index[1:]
+    for i in range(0,len(criteria_index)-1):
+        if criteria_index[i+1] - criteria_index[i] != 1:
+            print('Parent criteria are not in sequential order in the input spreadsheet')
+            print(f'There is a gap between {criteria_row[criteria_index[i]]} and {criteria_row[criteria_index[i+1]]}.')
+            return False
+    return True
+
+def sub_criteria_sequentially(data,criteria_number:int,parent_criteria:list):
+    """
+    Check that the sub-criteria are in sequential order (no gaps)
+    """
+    for i in range(0,criteria_number):
+        sub_criteria_row = list(data.iloc[13+(21*(i))])
+        sub_criteria_index = [i for i, x in enumerate(sub_criteria_row) if str(x) != 'nan']
+        if len(sub_criteria_index) == 0:
+            continue
+        elif len(sub_criteria_index) == 1:
+            if sub_criteria_index[0] != 7:
+                print(f'{sub_criteria_row[sub_criteria_index[0]]} needs to be in the first column in Tier 2.{i+1}')
+                return False
+        else:
+            for j in range(0,len(sub_criteria_index)-1):
+                if sub_criteria_index[j+1] - sub_criteria_index[j] != 1:
+                    print('Sub-criteria are not in sequential order in the input spreadsheet')
+                    print(f'There is a gap between {sub_criteria_row[sub_criteria_index[j]]} and {sub_criteria_row[sub_criteria_index[j+1]]} in Tier 2.{i+1}.')
+                    return False
+    return True
+
 
 
 
@@ -61,3 +97,5 @@ parents,number = criteria_info(data)
 print("Unique parent criteria:", criteria_unique(parents))
 print("Criteria match with parent definitions:", parent_match(data,parents,number))
 print("Unique sub-criteria:", sub_criteria_unique(data,number))
+print("Criteria appear sequentially:", criteria_sequentially(data))
+print("Sub-criteria appear sequentially:", sub_criteria_sequentially(data,number,parents))
