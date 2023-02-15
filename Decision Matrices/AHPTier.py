@@ -4,19 +4,6 @@ class AHPTier():
     def __init__(self,importance_matrix:np.array,criteria:list,):
         self.importance_matrix = importance_matrix
         self.criteria = criteria
-    def matrix_checker(self):
-        # Check if the matrix is square
-        self.check = False
-        self.square = False
-        if self.importance_matrix.shape[0] == self.importance_matrix.shape[1]:
-            self.square = True
-        # Check if lead diagonal is 1
-        self.lead_diagonal = False
-        if np.all(np.diag(self.importance_matrix) == 1):
-            self.lead_diagonal = True
-        if self.square and self.lead_diagonal:
-            self.check = True
-        return self.check
     def weighting_calculator(self):
         # Sum of columns
         self.sum_of_columns = np.sum(self.importance_matrix, axis=0)
@@ -57,7 +44,7 @@ class AHPTier():
         return self.weightings
     
 
-def criteria_tier_weightings(data:pd.DataFrame):
+def criteria_class(data:pd.DataFrame):
     #Read in hierarchy
     hierarchy = data
     criteria_row = list(hierarchy.iloc[1])
@@ -69,16 +56,7 @@ def criteria_tier_weightings(data:pd.DataFrame):
     # Convert dataframe to numpy array
     hierarchy_criteria_table = hierarchy_criteria_table.to_numpy()
     # Create AHPTier object
-    criteria_tier = AHPTier(hierarchy_criteria_table,hierarchy_criteria)
-    # Check if matrix is square and lead diagonal is 1
-    criteria_tier.matrix_checker()
-    # Calculate criteria weightings
-    criteria_tier.weighting_calculator()
-    # Check if matrix is consistent
-    if criteria_tier.consistency_checker() == False:
-        print('Criteria tier matrix is not consistent')
-        return None
-    return criteria_tier.weightings_dictionary(),len(hierarchy_criteria)
+    return AHPTier(hierarchy_criteria_table,hierarchy_criteria)
 
 
 def sub_criteria_tier_importance(data:pd.DataFrame,sub_criteria_number:int):

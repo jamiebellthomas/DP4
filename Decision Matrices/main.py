@@ -16,10 +16,10 @@ data = pd.read_excel('hierarchy.xlsx', sheet_name='Sheet1', header=0, index_col=
 parents,number = criteria_info(data)
 print("---------------------")
 print("Checking for a valid model name...")
-model_name_check,model_name = model_name_check(data)
-if model_name_check == True:
-    print(model_name_check)
-if model_name_check == False:
+model_name_bool,model_name = model_name_check(data)
+if model_name_bool == True:
+    print(model_name_bool)
+if model_name_bool == False:
     print("---------------------")
     quit()
 
@@ -91,5 +91,75 @@ print("USER INPUT CHECKS COMPLETE")
 print("---------------------")
 
 # The next step is to check the consistency of the user's decision making
+
+# Now the each pairwise comparison table will be passed into an AHP object, the weightings will be calculated and the consistency will be checked
+# The weightings will then be added to a dictionary
+# The dictionary will then be added to a dictionary of dictionaries
+# Finally, the dictionary of dictionaries will then be saved as a pkl file
+
+# First let's create call AHPTier to create an AHP object for the parent criteria
+# The procedure for this was mocked up in hierarchyReader.py script
+print("---------------------")
+print("Now the consistency of the user's decision making will be checked")
+print("---------------------")
+from AHPTier import *
+
+parent_criteria_class = (criteria_class(data))
+parent_criteria_class.weighting_calculator()
+if parent_criteria_class.consistency_checker() == True:
+    print("Parent Criteria Consistency Check: Passed")
+    parent_criteria_weightings_dictionary = parent_criteria_class.weightings_dictionary()
+if parent_criteria_class.consistency_checker() == False:
+    print("Parent Criteria Consistency Check: Failed")
+    print("Check the pairwise comparison table for parent criteria and ensure your decision making is consistent")
+    print("---------------------")
+    quit()
+print("Parent criteria weightings:", parent_criteria_weightings_dictionary)
+print("---------------------")
+
+# Now let's create call AHPTier to create an AHP object for the sub-criteria
+# First let's extract the sub-criteria pair wise tables from the input spreadsheet and save them in a dictionary where the key is the parent criteria
+# This will help us keep track of the hierarchy structure
+sub_criteria_dictionary = {}
+for i in range(1,len(parent_criteria_class.criteria)+1):
+    sub_criteria_table,sub_criteria,parent = sub_criteria_tier_importance(data,i)
+    sub_criteria_dictionary[parent] = [sub_criteria_table,sub_criteria]
+
+sub_criteria_weightings_dictionary_db = {}
+tier = 0
+print("Sub-criteria weightings:")
+print("---------------------")
+
+for key in sub_criteria_dictionary:
+    tier+=1
+    sub_criteria_class = AHPTier(sub_criteria_dictionary[key][0],sub_criteria_dictionary[key][1])
+    sub_criteria_class.weighting_calculator()
+    if sub_criteria_class.consistency_checker() == True:
+        print(f"{key} sub-criteria (Tier 2.{tier}) consistency check: Passed")
+        sub_criteria_weightings_dictionary = sub_criteria_class.weightings_dictionary()
+        print(f"({sub_criteria_weightings_dictionary})")
+        print("---------------------")
+
+        sub_criteria_weightings_dictionary_db[key] = sub_criteria_weightings_dictionary
+        
+    if sub_criteria_class.consistency_checker() == False:
+        print(f"{key} sub-criteria (Tier 2.{tier}) consistency check: Failed")
+        print(f"Check the pairwise comparison table for (Tier 2.{tier}) and ensure your decision making is consistent")
+        print("---------------------")
+        quit()
+print("---------------------")
+print("USER DECISION MAKING CONSISTENCY CHECKS COMPLETE")
+print("---------------------")
+
+# Now let's save the parent criteria weightings dictionary and the sub-criteria weightings dictionary of dictionaries as a pkl file
+# The pkl file will be saved in the Models folder and will be named after the model name the user has specified
+with open(f'Models/{model_name}', 'wb') as f:
+    pickle.dump((parent_criteria_weightings_dictionary, sub_criteria_weightings_dictionary_db), f)
+
+
+
+
+
+
 
 
