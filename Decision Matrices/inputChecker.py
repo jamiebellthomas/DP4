@@ -8,13 +8,19 @@ import numpy as np
 #no missing importance values
 #informative error messages clearly highlighting the problem
 # Load in data
-data = pd.read_excel('hierarchy.xlsx', sheet_name='Sheet1', header=0)
+data = pd.read_excel('hierarchy.xlsx', sheet_name='Sheet1', header=0, index_col=0)
 def criteria_info(data):
     criteria_row = list(data.iloc[1])
     parent_criteria = [x for x in criteria_row if str(x) != 'nan']
     parent_criteria = parent_criteria[1:]
     return parent_criteria,len(parent_criteria)
-
+def model_name_check(data):
+    model_name = (data.iat[0,5])
+    if str(model_name) == 'nan':
+        print('Model name is not defined')
+        return False, model_name
+    else:
+        return True, model_name
 def criteria_unique(parent_criteria:list):
     """
     Check that the criteria are unique (no duplicates on the top tier)
@@ -41,8 +47,9 @@ def parent_match(data,parent_criteria:list ,criteria_number:int):
         return True
     else:
         print('Parent criteria defined at the top of the input spreadsheet do not match the parent criteria defined in the spreadsheet')
-        print('Parent criteria defined at the top of the input spreadsheet:',sorted(parent_criteria))
-        print('Parent criteria defined in the spreadsheet:',sorted(parent_in_data_list))
+        print('The parent criteria defined at the start must match to a corresponding tier in the spreadsheet')
+        print('There can be no duplicate tiers and tiers must be defined in sequential order')
+
         return False
 
 
@@ -79,7 +86,7 @@ def criteria_sequentially(data):
             return False
     return True
 
-def sub_criteria_sequentially(data,criteria_number:int,parent_criteria:list):
+def sub_criteria_sequentially(data,criteria_number:int):
     """
     Check that the sub-criteria are in sequential order (no gaps)
     """
@@ -100,7 +107,27 @@ def sub_criteria_sequentially(data,criteria_number:int,parent_criteria:list):
                     return False
     return True
 
-def importance_table_checker(data,criteria_number:int):
+def criteria_importance_table_checker(data,criteria_number:int):
+    """
+    Check that the pairwise importance table for each relevent tier is complete
+    """
+    for i in range(0,criteria_number):
+        criteria_row = list(data.iloc[1])
+        criteria_index = [i for i, x in enumerate(criteria_row) if str(x) != 'nan']
+        importance_table = data.iloc[2:2+len(criteria_index),criteria_index]
+        importance_table = importance_table.to_numpy()
+        #print(importance_table)
+        # Check that the importance table is complete with no missing values
+        for x in range(0,len(importance_table)):
+            for y in range(0,len(importance_table)):
+                if np.isnan(importance_table[x][y]):
+                    print("Parent criteria importance table is incomplete, please return to the input spreadsheet and complete the table")
+                    return False
+    return True
+
+
+
+def sub_criteria_importance_table_checker(data,criteria_number:int):
     """
     Check that the pairwise importance table for each relevent tier is complete
     """
@@ -128,9 +155,12 @@ def importance_table_checker(data,criteria_number:int):
 
 
 parents,number = criteria_info(data)
-print("Unique parent criteria:", criteria_unique(parents))
-print("Criteria match with parent definitions:", parent_match(data,parents,number))
-print("Unique sub-criteria:", sub_criteria_unique(data,number))
-print("Criteria appear sequentially:", criteria_sequentially(data))
-print("Sub-criteria appear sequentially:", sub_criteria_sequentially(data,number,parents))
-print("Importance tables completed:", importance_table_checker(data,number))
+#print("Unique parent criteria:", criteria_unique(parents))
+#print("Criteria match with parent definitions:", parent_match(data,parents,number))
+#print("Unique sub-criteria:", sub_criteria_unique(data,number))
+#print("Criteria appear sequentially:", criteria_sequentially(data))
+#print("Sub-criteria appear sequentially:", sub_criteria_sequentially(data,number,parents))
+#print("Importance tables completed:", importance_table_checker(data,number))
+#print('Model name:', model_name(data))
+
+print("Unique parent criteria:", criteria_importance_table_checker(data,number))

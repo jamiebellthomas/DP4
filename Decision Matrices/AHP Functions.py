@@ -52,9 +52,9 @@ def consistency_checker(criteria_importance, criteria_weightings):
     return consistent
 
 
-print('Square matrix & Lead diagonal = 1:', matrix_checker(criteria_importance))
-print('Criteria weightings:', weighting_calculator(criteria_importance))
-print('Consistent:', consistency_checker(criteria_importance, weighting_calculator(criteria_importance)))
+#print('Square matrix & Lead diagonal = 1:', matrix_checker(criteria_importance))
+#print('Criteria weightings:', weighting_calculator(criteria_importance))
+#print('Consistent:', consistency_checker(criteria_importance, weighting_calculator(criteria_importance)))
 
 
 

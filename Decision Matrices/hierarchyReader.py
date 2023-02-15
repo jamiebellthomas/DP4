@@ -47,5 +47,5 @@ print('Criteria Dictionary:', criteria_dictionary)
 print('---------------------')
 print('Sub-Criteria Dictionary:', sub_criteria_dictionary)
 
-with open(f'Models/{model_name}', 'wb') as f:
-    pickle.dump((criteria_dictionary, sub_criteria_dictionary), f)
+#with open(f'Models/{model_name}', 'wb') as f:
+#    pickle.dump((criteria_dictionary, sub_criteria_dictionary), f)
