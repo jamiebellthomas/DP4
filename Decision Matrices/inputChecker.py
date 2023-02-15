@@ -154,7 +154,7 @@ def sub_criteria_importance_table_checker(data,criteria_number:int):
         return False
 
 
-parents,number = criteria_info(data)
+#parents,number = criteria_info(data)
 #print("Unique parent criteria:", criteria_unique(parents))
 #print("Criteria match with parent definitions:", parent_match(data,parents,number))
 #print("Unique sub-criteria:", sub_criteria_unique(data,number))
@@ -163,4 +163,4 @@ parents,number = criteria_info(data)
 #print("Importance tables completed:", importance_table_checker(data,number))
 #print('Model name:', model_name(data))
 
-print("Unique parent criteria:", criteria_importance_table_checker(data,number))
+#print("Unique parent criteria:", criteria_importance_table_checker(data,number))

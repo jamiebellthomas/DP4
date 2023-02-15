@@ -2,6 +2,7 @@ import numpy as np
 import pickle
 import pandas as pd
 from hierarchyCalculations import *
+
 with open('Models/default2', 'rb') as f:
     criteria_dictionary, sub_criteria_dictionary = pickle.load(f)
 
