@@ -12,7 +12,6 @@ data = pd.read_excel('hierarchy.xlsx', sheet_name='Sheet1', header=0, index_col=
 def criteria_info(data):
     criteria_row = list(data.iloc[1])
     parent_criteria = [x for x in criteria_row if str(x) != 'nan']
-    parent_criteria = parent_criteria[1:]
     return parent_criteria,len(parent_criteria)
 def model_name_check(data):
     model_name = (data.iat[0,5])

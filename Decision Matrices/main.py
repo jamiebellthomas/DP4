@@ -17,6 +17,7 @@ data = pd.read_excel('hierarchy.xlsx', sheet_name='Sheet1', header=0, index_col=
 def main():
     sys.stdout = open("output.log", "w")
     parents,number = criteria_info(data)
+    print(number)
     print("---------------------")
     print("Checking for a valid model name...")
     model_name_bool,model_name = model_name_check(data)
@@ -156,7 +157,7 @@ def main():
     # Now let's save the parent criteria weightings dictionary and the sub-criteria weightings dictionary of dictionaries as a pkl file
     # The pkl file will be saved in the Models folder and will be named after the model name the user has specified
 
-    print(f"Exporting model as a pkl file to ...Models/{model_name}")
+    print(f"Exporting model as a pkl file to {os.getcwd()}\Models\{model_name}")
     path = f'Models/{model_name}'
     if not os.path.exists(path):
         os.makedirs(path)
@@ -182,6 +183,9 @@ if result == False:
     # close thte output log file
     sys.stdout.close()
     # Move the output log file to the Models folder
+    path = f'Models/{model_name}'
+    if not os.path.exists(path):
+        os.makedirs(path)
     shutil.move('output.log', f'Models/{model_name}/output.log')
     sys.stdout = sys.__stdout__
     print("---------------------")

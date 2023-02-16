@@ -6,48 +6,7 @@ Checking the uniqueness of parent criteria...
 True
 ---------------------
 Checking that the parent criteria defined at the top of the input spreadsheet match the parent criteria defined in the subsequent tiers...
-True
----------------------
-Checking the uniqueness of sub-criteria...
-True
----------------------
-Checking parent criteria have been added in a sequential manner (no gaps)...
-True
----------------------
-Checking sub-criteria have been added in a sequential manner (no gaps)...
-True
----------------------
-Checking that the pairwise comparison table for parent criteria is complete...
-True
----------------------
-Checking that the pairwise comparison tables for sub-criteria are complete...
-True
----------------------
-USER INPUT CHECKS COMPLETE
----------------------
----------------------
-Now the consistency of the user's decision making will be checked
----------------------
-Parent Criteria Consistency Check: Passed
-Parent criteria weightings: {'Random': 0.3889268626110731, 'Foo': 0.3889268626110731, 'Star': 0.15345181134654817, 'Shoe': 0.06869446343130553}
----------------------
-Sub-criteria weightings:
----------------------
-Shoe sub-criteria (Tier 2.1) consistency check: Passed
-({'Payload': 0.8333333333333334, 'Cargo space': 0.16666666666666669})
----------------------
-Foo sub-criteria (Tier 2.2) consistency check: Passed
-({'Range': 0.6193520886615516, 'Endurance': 0.284228473998295, 'Altitude': 0.09641943734015346})
----------------------
-Star sub-criteria (Tier 2.3) consistency check: Passed
-({'Cruise speed': 0.8333333333333334, 'Max speed': 0.16666666666666669})
----------------------
-Random sub-criteria (Tier 2.4) consistency check: Passed
-({'Length': 0.2, 'Width': 0.2, 'Height': 0.2, 'Wingspan': 0.4})
----------------------
-USER DECISION MAKING CONSISTENCY CHECKS COMPLETE
----------------------
-Exporting model as a pkl file to ...Models/test
-...
-Export completed
+Parent criteria defined at the top of the input spreadsheet do not match the parent criteria defined in the spreadsheet
+The parent criteria defined at the start must match to a corresponding tier in the spreadsheet
+There can be no duplicate tiers and tiers must be defined in sequential order
 ---------------------
