@@ -8,7 +8,6 @@ import pickle
 
 data = pd.read_excel('hierarchy.xlsx', sheet_name='Sheet1', header=0, index_col=0)
 model_name = (data.iat[0,5])
-print(model_name)
 parent_criteria_class = (criteria_class(data))
 parent_criteria_class.weighting_calculator()
 parent_criteria_class.consistency_checker()
@@ -47,7 +46,8 @@ if sub_criteria_tier.consistency_checker():
 # Remove first and second elements of each sub criteria dictionary
 
 
-
+print(" ")
+print(" ")
 print('Criteria Dictionary:', parent_criteria_class.weightings_dictionary())
 print('---------------------')
 print('Sub-Criteria Dictionary:', sub_criteria_dictionary)

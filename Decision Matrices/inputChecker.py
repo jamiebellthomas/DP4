@@ -5,7 +5,7 @@ import numpy as np
 #parent criteria at the top of the hierarchy match parent critaria one-to-one (DONE)
 #criteria and sub-criteria are unique (no duplicates over any of the tiers) (DONE)
 #critera and sub-criteria are in sequential order (no gaps) (DONE)
-#no missing importance values
+#no missing importance values (DONE)
 #informative error messages clearly highlighting the problem
 # Load in data
 data = pd.read_excel('hierarchy.xlsx', sheet_name='Sheet1', header=0, index_col=0)

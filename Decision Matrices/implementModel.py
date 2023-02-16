@@ -3,8 +3,10 @@ import pickle
 import pandas as pd
 from hierarchyCalculations import *
 
-with open('Models/default2', 'rb') as f:
+with open('Models/default2/default2', 'rb') as f:
     criteria_dictionary, sub_criteria_dictionary = pickle.load(f)
+# Open default2 model in Models folder and load criteria and sub-criteria dictionaries
+
 
 print('Criteria Dictionary:', criteria_dictionary)
 print('---------------------')

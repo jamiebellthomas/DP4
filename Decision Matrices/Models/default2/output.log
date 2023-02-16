@@ -1,4 +1,3 @@
-5
 ---------------------
 Checking for a valid model name...
 True
@@ -51,7 +50,7 @@ Drone type sub-criteria (Tier 2.5) consistency check: Passed
 ---------------------
 USER DECISION MAKING CONSISTENCY CHECKS COMPLETE
 ---------------------
-Exporting model as a pkl file to C:\Users\jamie\OneDrive\Documents\GitHub\DP4\Decision Matrices\Models\default_model
+Exporting model as a pkl file to C:\Users\jamie\OneDrive\Documents\GitHub\DP4\Decision Matrices\Models\default2
 ...
 Export completed
 ---------------------

@@ -17,7 +17,6 @@ data = pd.read_excel('hierarchy.xlsx', sheet_name='Sheet1', header=0, index_col=
 def main():
     sys.stdout = open("output.log", "w")
     parents,number = criteria_info(data)
-    print(number)
     print("---------------------")
     print("Checking for a valid model name...")
     model_name_bool,model_name = model_name_check(data)
