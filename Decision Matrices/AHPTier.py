@@ -5,40 +5,56 @@ class AHPTier():
         self.importance_matrix = importance_matrix
         self.criteria = criteria
     def weighting_calculator(self):
-        # Sum of columns
-        self.sum_of_columns = np.sum(self.importance_matrix, axis=0)
-        # Divide each column by the sum of the column
-        self.normalized_importance_matrix = self.importance_matrix / self.sum_of_columns
-        # Average of each row (criteria weightings)
-        self.criteria_weightings = np.mean(self.normalized_importance_matrix, axis=1)
+        """
+        Calculates the weightings of the criteria in the tier
+        Returns:
+            criteria_weightings (np.array): The weightings of the criteria in the tier
+        """
+        # Find all real eigenvalues and eigenvectors
+        self.eigenvalues, self.eigenvectors = np.linalg.eig(self.importance_matrix)
+        # Find the index of the largest eigenvalue
+        self.max_index = np.argmax(self.eigenvalues)
+        # Find the largest eigenvalue
+        self.max_eigenvalue = self.eigenvalues[self.max_index]
+        # Find the corresponding eigenvector
+        self.max_eigenvector = self.eigenvectors[:,self.max_index]
+        # Normalize the eigenvector
+        self.max_eigenvector = self.max_eigenvector / np.sum(self.max_eigenvector)
+        self.criteria_weightings = self.max_eigenvector
+        
         return self.criteria_weightings
     def consistency_checker(self):
-        # Multiply the first colum of the importance matrix by the criteira weighting for the first row
-        # Repeat for each row
-        self.weighted_matrix = self.importance_matrix * self.criteria_weightings
-        # Sum of each row of the weighted matrix
-        self.weighted_sum_values = np.sum(self.weighted_matrix, axis=1)
-        # divide each value of the weighted sum value by the ctieria weightings
-        self.ratio_weighted_sum_values = self.weighted_sum_values / self.criteria_weightings
-        # Average of the ratio weighted sum values
-        self.lambda_max = np.mean(self.ratio_weighted_sum_values)
-        # Consistency index
-        self.consistency_index = (self.lambda_max - self.importance_matrix.shape[0]) / (self.importance_matrix.shape[0] - 1)
-        # Random index for any number of criteria between 1 and 12 in a dictionary 
+        """
+        Checks the consistency of the importance matrix
+        Returns:
+            consistent (bool): True if the importance matrix is consistent
+        """
+        # Calculate the consistency index
+        self.CI = (self.max_eigenvalue - len(self.importance_matrix)) / (len(self.importance_matrix) - 1)
+        # Calculate the consistency ratio
+        # Random index values for 2-12 criteria
         self.random_index = {1:0,2:0,3:0.58,4:0.9,5:1.12,6:1.24,7:1.32,8:1.41,9:1.45,10:1.49,11:1.51,12:1.48}
-        #Pick out the random index for the number of criteria
-        self.random_index = self.random_index[self.importance_matrix.shape[0]]
-        # Consistency ratio
-        self.consistency_ratio = 0
-        if self.importance_matrix.shape[0] > 2:
-            self.consistency_ratio = self.consistency_index / self.random_index
-        # Consistency ratio is less than 0.1 so the matrix is consistent
+        # Initialise consistency ratio
+        self.CR = 0
+        # If there are more than 2 criteria, calculate the consistency ratio
+        # Otherwise, DivideByZeroError is raised
+        if len(self.importance_matrix) > 2:
+            self.CR = self.CI / self.random_index[len(self.importance_matrix)]
+        # If the consistency ratio is less than 0.1, the importance matrix is consistent
         self.consistent = False
-        if self.consistency_ratio < 0.1:
+        if self.CR < 0.1:
             self.consistent = True
         return self.consistent
+        
     def weightings_dictionary(self):
+        """
+        Creates a dictionary of the criteria and their weightings
+        Returns:
+            weightings (dict): A dictionary of the criteria and their weightings
+        """
+        # Initialise dictionary
         self.weightings = {}
+        # Add criteria and weightings to dictionary
         for i in range(len(self.criteria)):
             self.weightings[self.criteria[i]] = self.criteria_weightings[i]
         return self.weightings
@@ -47,7 +63,9 @@ class AHPTier():
 def criteria_class(data:pd.DataFrame):
     #Read in hierarchy
     hierarchy = data
+    # Read in criteria row
     criteria_row = list(hierarchy.iloc[1])
+    # Remove NaNs so only criteria remain
     hierarchy_criteria = [x for x in criteria_row if str(x) != 'nan']
     # Index of hierarchy criteria
     hierarchy_criteria_index = [i for i, x in enumerate(criteria_row) if str(x) != 'nan']
@@ -62,11 +80,16 @@ def criteria_class(data:pd.DataFrame):
 def sub_criteria_tier_importance(data:pd.DataFrame,sub_criteria_number:int):
     #Read in hierarchy
     hierarchy = data
+    # Read in sub criteria row
     sub_criteria_row = list(hierarchy.iloc[13+(21*(sub_criteria_number-1))])
+    # Remove NaNs so only sub criteria remain
     sub_criteria = [x for x in sub_criteria_row if str(x) != 'nan']
     # Index of sub criteria
     sub_criteria_index = [i for i, x in enumerate(sub_criteria_row) if str(x) != 'nan']
     # Table of sub criteria
+    # 14 is the row number of the first sub criteria
+    # 21 is the number of rows between each sub criteria
+    # 21*(sub_criteria_number-1) is the number of rows to skip to get to the sub criteria
     sub_criteria_table = hierarchy.iloc[14+(21*(sub_criteria_number-1)):14+(21*(sub_criteria_number-1))+len(sub_criteria),sub_criteria_index]
     # Convert dataframe to numpy array
     sub_criteria_table = sub_criteria_table.to_numpy()

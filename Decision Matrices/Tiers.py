@@ -31,6 +31,7 @@ CI = (max_eigenvalue - len(test_array)) / (len(test_array) - 1)
 # Calculate the consistency ratio
 CR = CI / 0.9
 print(CR)
+print(max_eigenvector)
 
 
 
