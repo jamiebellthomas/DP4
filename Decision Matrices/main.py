@@ -108,6 +108,7 @@ def main():
     
 
     parent_criteria_class = (criteria_class(data))
+    print(parent_criteria_class.importance_matrix)
     parent_criteria_class.weighting_calculator()
     if parent_criteria_class.consistency_checker() == True:
         print("Parent Criteria Consistency Check: Passed")

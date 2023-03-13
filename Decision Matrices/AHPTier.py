@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 class AHPTier():
     def __init__(self,importance_matrix:np.array,criteria:list,):
-        self.importance_matrix = importance_matrix
+        self.importance_matrix = np.array(importance_matrix,dtype=float)
         self.criteria = criteria
     def weighting_calculator(self):
         """
@@ -10,6 +10,12 @@ class AHPTier():
         Returns:
             criteria_weightings (np.array): The weightings of the criteria in the tier
         """
+        
+        # Round all values to 4 decimal places
+        for i in range(len(self.importance_matrix)):
+            for j in range(len(self.importance_matrix)):
+                self.importance_matrix[i,j] = round(self.importance_matrix[i,j],4)
+        print(self.importance_matrix)
         # Find all real eigenvalues and eigenvectors
         self.eigenvalues, self.eigenvectors = np.linalg.eig(self.importance_matrix)
         # Find the index of the largest eigenvalue
@@ -21,6 +27,9 @@ class AHPTier():
         # Normalize the eigenvector
         self.max_eigenvector = self.max_eigenvector / np.sum(self.max_eigenvector)
         self.criteria_weightings = self.max_eigenvector
+        # Round all values to 4 decimal places and remove and imaginary components
+        for i in range(len(self.criteria_weightings)):
+            self.criteria_weightings[i] = self.criteria_weightings[i].real
         
         return self.criteria_weightings
     def consistency_checker(self):
@@ -73,6 +82,7 @@ def criteria_class(data:pd.DataFrame):
     hierarchy_criteria_table = hierarchy.iloc[2:2+len(hierarchy_criteria),hierarchy_criteria_index]
     # Convert dataframe to numpy array
     hierarchy_criteria_table = hierarchy_criteria_table.to_numpy()
+    print(type(hierarchy_criteria_table))
     # Create AHPTier object
     return AHPTier(hierarchy_criteria_table,hierarchy_criteria)
 
